@@ -24,7 +24,7 @@ Desarrollé una API REST completa utilizando Java 17 y Spring Boot, enfocada en 
 
 - Manejo de rutas dinámicas con @PathVariable.
 
-# Tecnologias utilizadas:
+## Tecnologias utilizadas:
 
 - Java 17
 
@@ -35,3 +35,15 @@ Desarrollé una API REST completa utilizando Java 17 y Spring Boot, enfocada en 
 - JSON / REST
 
 - IDE: IntelliJ IDEA
+
+## Pruebas y validación:
+
+Realicé pruebas completas de la API utilizando Postman, incluyendo:
+
+- Envío de JSON con distintos métodos HTTP (GET, POST, PUT, DELETE).
+
+- Validación de respuestas, códigos de estado y manejo de errores.
+
+- Simulación de formularios enviando datos del usuario mediante el cuerpo de la petición.
+
+- Pruebas de rutas dinámicas y búsqueda de empleados por ID y por nombre.
