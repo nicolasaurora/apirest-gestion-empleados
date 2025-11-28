@@ -1,6 +1,6 @@
 # API REST de Gestión de Empleados 
 
-Desarrollé una API REST completa utilizando Java 17 y Spring Boot, enfocada en la gestión de empleados. El proyecto implementa las operaciones CRUD (crear, leer, actualizar y eliminar) aplicando buenas prácticas de diseño, manejo de colecciones y procesamiento de datos en memoria.
+Desarrollé una API REST completa utilizando Java 17, Spring Boot y MySQL, enfocada en la gestión de empleados. El proyecto implementa las operaciones CRUD (crear, leer, actualizar y eliminar) aplicando buenas prácticas de diseño, y cuenta con una arquitectura real con base de datos, validaciones y despliegue mediante Docker.
 
 ## Características principales
 
@@ -16,7 +16,7 @@ Desarrollé una API REST completa utilizando Java 17 y Spring Boot, enfocada en 
   
   - DELETE → eliminación por ID
 
-- Manejo de datos utilizando una lista en memoria (List<Empleado>) con IDs autoincrementales.
+- Manejo de datos utilizando una base de datos.
 
 - Uso de Java Collections, Optional, Streams y expresiones lambda para búsquedas y manipulación de datos.
 
@@ -30,9 +30,13 @@ Desarrollé una API REST completa utilizando Java 17 y Spring Boot, enfocada en 
 
 - Spring Boot (Spring Web)
 
-- Maven
+- Hibernate/JPA para la persistencia
 
-- JSON / REST
+- MySQL como base de datos
+
+- Docker para despliegue
+
+- Maven
 
 - IDE: IntelliJ IDEA
 
