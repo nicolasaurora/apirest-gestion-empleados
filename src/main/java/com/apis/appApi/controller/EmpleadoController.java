@@ -1,113 +1,85 @@
 package com.apis.appApi.controller;
 
 import com.apis.appApi.entities.Empleado;
+import com.apis.appApi.service.EmpleadoService;
+import jakarta.validation.Valid;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.http.converter.json.GsonBuilderUtils;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 
 @RestController
+@RequestMapping("/empleados")
 public class EmpleadoController {
 
-    private static final List<Empleado> EMPLEADOS = new ArrayList<>();
+    @Autowired
+    private EmpleadoService empleadoService;
 
-    static {
-        EMPLEADOS.add(new Empleado(1L,"Nicolas", 32, "Desarrollador"));
-        EMPLEADOS.add(new Empleado(2L,"Sofia", 32, "Kinesiologa"));
-        EMPLEADOS.add(new Empleado(3L,"Daniel", 54, "Estilista"));
+    @GetMapping
+    public ResponseEntity<List<Empleado>> getAllEmpleados() {
+        List<Empleado> empleados = empleadoService.listarTodos();
+        return ResponseEntity.ok(empleados);
     }
 
-    @GetMapping("/")
-    public String home () {
-        return "Esta es la pagina de inicio de mi API de Empleados, Para visualizar la lista de empleados ingresa al siguiente link: http://localhost:8080/empleados";
-    }
-
-    @GetMapping("/empleados")
-    public List<Empleado> employees () {
-        return EMPLEADOS;
-    }
-
-    @GetMapping("/empleados/id/{id}")
+    @GetMapping("/id/{id}")
     public ResponseEntity<?> getEmpleadoById(@PathVariable Long id) {
-        Optional<Empleado> empleado = EMPLEADOS.stream()
-                .filter(e -> e.getId().equals(id))
-                .findFirst();
+        return empleadoService.buscarPorId(id)
+                .<ResponseEntity<?>>map(ResponseEntity::ok)
+                .orElseGet(() -> ResponseEntity.status(HttpStatus.NOT_FOUND)
+                        .body("No se encontró empleado con id: " + id));
+    }
 
-        if (empleado.isPresent()) {
-            return ResponseEntity.ok(empleado.get());
+
+    @GetMapping("/nombre/{nombre}")
+    public ResponseEntity<?> getEmpleadoByNombre(@PathVariable String nombre) {
+        return empleadoService.buscarPorNombre(nombre)
+                .<ResponseEntity<?>>map(ResponseEntity::ok)
+                .orElseGet(() -> ResponseEntity.status(HttpStatus.NOT_FOUND)
+                        .body("No se encontró empleado con el nombre: " + nombre));
+    }
+
+    @PostMapping
+    public ResponseEntity<?> agregarEmpleado(@Valid @RequestBody Empleado nuevoEmpleado, BindingResult result) {
+
+        if (result.hasErrors()) {
+            String mensaje = result.getFieldErrors().stream()
+                    .map(error -> error.getField() + ": " + error.getDefaultMessage())
+                    .findFirst()
+                    .orElse("Datos inválidos");
+            return ResponseEntity.badRequest().body(mensaje);
         }
 
-        return ResponseEntity
-                .status(HttpStatus.NOT_FOUND)
-                .body("No se encontro empleado con id: " + id);
+        return ResponseEntity.status(201).body(empleadoService.agregar(nuevoEmpleado));
     }
 
-
-    @GetMapping("/empleados/nombre/{nombre}")
-    public ResponseEntity<?> getEmpleadoByName(@PathVariable String nombre) {
-        Optional<Empleado> empleado = EMPLEADOS.stream()
-                .filter(e -> e.getNombre().equalsIgnoreCase(nombre))
-                .findFirst();
-
-        if (empleado.isPresent()) {
-            return ResponseEntity.ok(empleado.get());
-        }
-
-        return ResponseEntity
-                .status(HttpStatus.NOT_FOUND)
-                .body("No se encontro empleado con el nombre: " + nombre);
-    }
-
-    @PostMapping("/empleados/nuevo/{nombre}/{edad}/{profesion}")
-    public Empleado agregarEmpleadoPorUrl(@PathVariable String nombre, @PathVariable int edad, @PathVariable String profesion) {
-
-        Empleado emp = new Empleado((long) EMPLEADOS.size() + 1, nombre, edad, profesion);
-
-        EMPLEADOS.add(emp);
-
-        return emp;
-    }
-
-    @DeleteMapping("empleados/{id}")
-    public String borrarEmpleado(@PathVariable Long id) {
-
-        Optional<Empleado> empleado = EMPLEADOS.stream()
-                .filter(e -> e.getId().equals(id))
-                .findFirst();
-
-        if (empleado.isPresent()) {
-            EMPLEADOS.remove(empleado.get());
-            return "Empleado con id " + id + " eliminado correctamente.";
+    @DeleteMapping("/{id}")
+    public ResponseEntity<String> borrarEmpleado(@PathVariable Long id) {
+        boolean eliminado = empleadoService.eliminar(id);
+        if (eliminado) {
+            return ResponseEntity.ok("Empleado con id " + id + " eliminado correctamente.");
         } else {
-            return "Empleado con ID " + id + " no encontrado.";
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Empleado con id " + id + " no encontrado.");
         }
-
     }
 
-    @PutMapping("/empleados/{id}")
-    public ResponseEntity<?> modificarEmpleado(@PathVariable Long id, @RequestBody Empleado datosActualizados) {
-        Optional<Empleado> empleado = EMPLEADOS.stream()
-                .filter(e -> e.getId().equals(id))
-                .findFirst();
+    @PutMapping("/{id}")
+    public ResponseEntity<?> modificarEmpleado(
+            @PathVariable Long id, @Valid @RequestBody Empleado datos, BindingResult result) {
 
-        if (empleado.isPresent()) {
-            Empleado empleadoExistente = empleado.get();
-
-            empleadoExistente.setNombre(datosActualizados.getNombre());
-            empleadoExistente.setEdad(datosActualizados.getEdad());
-            empleadoExistente.setProfesion(datosActualizados.getProfesion());
-
-            return ResponseEntity.ok(empleadoExistente);
+        if (result.hasErrors()) {
+            String mensaje = result.getFieldErrors().stream()
+                    .map(error -> error.getField() + ": " + error.getDefaultMessage())
+                    .findFirst()
+                    .orElse("Datos inválidos");
+            return ResponseEntity.badRequest().body(mensaje);
         }
 
-        return ResponseEntity
-                .status(HttpStatus.NOT_FOUND)
-                .body("No existe empleado con el ID ingresado.");
-
+        return empleadoService.modificarEmpleado(id, datos)
+                .<ResponseEntity<?>>map(e -> ResponseEntity.ok().body(e))
+                .orElseGet(() -> ResponseEntity.status(404).body("Empleado no encontrado"));
     }
 
 

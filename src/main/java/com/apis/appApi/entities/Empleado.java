@@ -1,10 +1,28 @@
 package com.apis.appApi.entities;
 
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.Size;
+import jakarta.validation.constraints.Min;
+import jakarta.validation.constraints.Max;
+import jakarta.persistence.*;
+
+@Entity
+@Table(name = "empleados")
 public class Empleado {
 
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+
+    @NotBlank(message = "El nombre no puede estar vacío.")
+    @Size(min = 3, max = 50, message = "El nombre debe tener entre 3 y 50 caracteres.")
     private String nombre;
+
+    @Min(value = 18, message = "La edad mínima debe ser 18.")
+    @Max(value = 80, message = "La edad máxima debe ser 80.")
     private int edad;
+
+    @NotBlank(message = "La profesión es obligatoria.")
     private String profesion;
 
 
