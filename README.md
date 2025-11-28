@@ -42,12 +42,62 @@ Desarrollé una API REST completa utilizando Java 17, Spring Boot y MySQL, enfoc
 
 ## Pruebas y validación:
 
-Realicé pruebas completas de la API utilizando Postman, incluyendo:
+### Realicé pruebas completas de la API utilizando Postman:
 
-- Envío de JSON con distintos métodos HTTP (GET, POST, PUT, DELETE).
+### GET – Obtener todos los empleados:
 
-- Validación de respuestas, códigos de estado y manejo de errores.
+Método: GET
 
-- Simulación de formularios enviando datos del usuario mediante el cuerpo de la petición.
+URL: /empleados
 
-- Pruebas de rutas dinámicas y búsqueda de empleados por ID y por nombre.
+![Descripción](./docs/postman_get_empleados.png)
+
+
+### GET – Obtener empleado por id:
+
+Método: GET
+
+URL: /empleados/id/{id}
+
+![Descripción](./docs/postman_get_empleados_id.png)
+
+
+### GET – Obtener empleado por nombre:
+
+Método: GET
+
+URL: /empleados/nombre/{nombre}
+
+![Descripción](./docs/postman_get_empleados_nombre.png)
+
+
+### POST – Crear un empleado:
+
+Método: POST
+
+URL: /empleados
+
+![Descripción](./docs/postman_post_empleado.png)
+
+
+### PUT – Actualizar empelado:
+
+Método: PUT
+
+URL: /empleados/{id}
+
+![Descripción](./docs/postman_put_empleado.png)
+
+
+### DELETE – Eliminar empelado con el id indicado:
+
+Método: DELETE
+
+URL: /empleados/{id}
+
+![Descripción](./docs/postman_delete_empleado_id.png)
+
+Realizamos un GET para verificar lista luego del DELETE:
+
+![Descripción](./docs/postman_get_empleados_actualizada.png)
+
