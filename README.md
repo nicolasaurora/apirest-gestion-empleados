@@ -1,6 +1,8 @@
 # API REST de Gestión de Empleados 
 
-Desarrollé una API REST completa utilizando Java 17, Spring Boot y MySQL, enfocada en la gestión de empleados. El proyecto implementa las operaciones CRUD (crear, leer, actualizar y eliminar) aplicando buenas prácticas de diseño, y cuenta con una arquitectura real con base de datos, validaciones y despliegue mediante Docker.
+Desarrollé una API REST completa utilizando Java 17, Spring Boot y MySQL, enfocada en la gestión de empleados. El proyecto implementa las operaciones CRUD (crear, leer, actualizar y eliminar) aplicando buenas prácticas de diseño.
+
+La arquitectura esta construida en capas utilizando Spring Boot, organizada en paquetes controller, service, repository y entities. El proyecto emplea Spring Data JPA con Hibernate para el mapeo y se conecta a una base de datos MySQL. Todo el entorno se ejecuta mediante Docker, utilizando Docker Compose para orquestar tanto la API como el contenedor de base de datos.
 
 ## Características principales
 
